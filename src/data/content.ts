@@ -73,8 +73,12 @@ export const CONTENT = {
     sealRing: `${[ROLE, NAME, OFFICE, CITY].map(upper).join(' · ')} ·`,
     /** Dekoratif logo görselinin alternatif metni. */
     sealAlt: `${NAME} — avukatlık monogramı`,
-    /** Logo bağlantısının ekran okuyucu etiketi. */
-    homeLabel: `${FULL_NAME} ana sayfa`,
+    /**
+     * Logo bağlantısının erişilebilir adı. WCAG 2.5.3 (Label in Name) için
+     * görünen yazımı (wordmark + rol) birebir içerir; ardından "ana sayfa"
+     * ipucu eklenir.
+     */
+    homeLabel: `${upper(NAME)} ${upper(NAV_ROLE_LABEL)} — ana sayfa`,
   },
 
   /* ------------------------------------------------------------------ *

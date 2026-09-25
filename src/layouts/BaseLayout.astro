@@ -90,9 +90,12 @@ const jsonLd = {
     <!-- Mirrors --color-ink-950 in src/styles/global.css (meta content cannot use CSS vars). -->
     <meta name="theme-color" content="#0a0907" />
 
-    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
     <link rel="icon" href={withBase('/favicon.ico')} sizes="32x32" />
-    <link rel="apple-touch-icon" href={withBase('/logo-mark.png')} />
+    <link rel="icon" type="image/png" sizes="32x32" href={withBase('/favicon-32.png')} />
+    <link rel="icon" type="image/png" sizes="16x16" href={withBase('/favicon-16.png')} />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <link rel="apple-touch-icon" sizes="180x180" href={withBase('/apple-touch-icon.png')} />
+    <link rel="manifest" href={withBase('/site.webmanifest')} />
     <link rel="canonical" href={canonical} />
 
     <title>{fullTitle}</title>
