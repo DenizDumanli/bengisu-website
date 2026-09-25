@@ -17,10 +17,9 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # GitHub Pages proje sitesi: https://<owner>.github.io/<repo>/
-  # Özel alan adına geçerken bu iki değeri güncelleyin (BASE_PATH: /).
-  SITE_URL: https://denizdumanli.github.io
-  BASE_PATH: /bengisu-website
+  # Özel alan adı (public/CNAME ile aynı olmalı). Alan adı kökten servis
+  # edildiği için BASE_PATH gerekmez; varsayılan "/" kullanılır.
+  SITE_URL: https://av.bengisuarslan.com
 
 jobs:
   build:
