@@ -42,10 +42,10 @@ jobs:
       - name: Build
         run: npm run build
 
+      # NOT: GITHUB_TOKEN Pages sitesini oluşturamaz (admin gerekir). Depo
+      # ayarlarında Settings > Pages > Source bir kez "GitHub Actions"
+      # seçilmelidir; sonrasında bu adım mevcut siteyi okuyup devam eder.
       - uses: actions/configure-pages@v5
-        with:
-          # Pages kaynağını "GitHub Actions" olarak ayarlar (zaten ayarlıysa atlar).
-          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
