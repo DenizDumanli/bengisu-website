@@ -1,0 +1,192 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Ornament from '../../components/Ornament.astro';
+import { CONTENT } from '../../data/content';
+import { absoluteUrl, baseOrigin, withBase } from '../../utils/paths';
+
+type Area = (typeof CONTENT.practiceAreas.areas)[number];
+
+export function getStaticPaths() {
+  return CONTENT.practiceAreas.areas.map((area) => ({
+    params: { slug: area.slug },
+    props: { area },
+  }));
+}
+
+interface Props {
+  area: Area;
+}
+
+const { area } = Astro.props;
+const { practiceAreas, practiceAreaSeo, ui, contact } = CONTENT;
+const origin = Astro.site ?? Astro.url;
+const root = baseOrigin(origin);
+const pageUrl = absoluteUrl(`/faaliyet-alanlari/${area.slug}/`, origin);
+const meta = practiceAreaSeo[area.slug];
+
+const otherAreas = practiceAreas.areas.filter((item) => item.slug !== area.slug);
+
+const steps = [
+  {
+    numeral: 'I',
+    title: 'Ön değerlendirme',
+    text: 'Dosyanızın kapsamını kısaca dinler, ilk izlenimi ve izlenebilecek yolları paylaşırım.',
+  },
+  {
+    numeral: 'II',
+    title: 'Hukuki analiz',
+    text: 'Güncel mevzuat ve içtihat taranır; güçlü ve zayıf noktalar netleştirilir.',
+  },
+  {
+    numeral: 'III',
+    title: 'Yol haritası',
+    text: 'Müzakere, sözleşme veya yargılama seçenekleri somut bir plana dönüştürülür.',
+  },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: area.title,
+    serviceType: area.title,
+    description: area.summary,
+    url: pageUrl,
+    provider: { '@id': `${root}/#business` },
+    areaServed: { '@type': 'City', name: contact.city },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Ana Sayfa', item: `${root}/` },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: practiceAreas.hero.title,
+        item: `${root}/faaliyet-alanlari/`,
+      },
+      { '@type': 'ListItem', position: 3, name: area.title, item: pageUrl },
+    ],
+  },
+];
+---
+
+<BaseLayout title={meta.title} description={meta.description} schema={schema}>
+  <PageHero numeral={area.numeral} eyebrow={practiceAreas.hero.eyebrow} title={area.title} />
+
+  <nav class="shell pt-10 text-[0.72rem] text-stone-500" aria-label="Sayfa yolu">
+    <ol class="flex flex-wrap items-center gap-3">
+      <li>
+        <a class="link-rule" href={withBase('/')}>
+          Ana Sayfa
+        </a>
+      </li>
+      <li aria-hidden="true">/</li>
+      <li>
+        <a class="link-rule" href={withBase('/faaliyet-alanlari/')}>
+          {practiceAreas.hero.title}
+        </a>
+      </li>
+      <li aria-hidden="true">/</li>
+      <li aria-current="page" class="text-ink-900">
+        {area.title}
+      </li>
+    </ol>
+  </nav>
+
+  <section class="section" aria-labelledby="kapsam">
+    <div class="shell grid gap-14 lg:grid-cols-[0.32fr_1fr] lg:gap-20">
+      <div>
+        <p class="numeral text-2xl">{area.numeral}</p>
+        <Ornament class="mt-6 max-w-[8rem] justify-start" />
+      </div>
+
+      <div>
+        <h2 id="kapsam" class="text-[clamp(1.6rem,3.2vw,2.5rem)] text-ink-900">
+          Kapsam
+        </h2>
+        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-stone-600">{area.summary}</p>
+
+        <ul class="mt-9 grid gap-4 sm:grid-cols-2">
+          {area.items.map((item) => (
+            <li class="flex gap-4 border-l border-gold-500/35 pl-5 leading-relaxed text-ink-900/90">
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+
+        <p class="mt-10 max-w-2xl text-sm leading-relaxed text-stone-500">{ui.notes.practice}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-parchment-100" aria-labelledby="gorusme">
+    <div class="shell">
+      <h2 id="gorusme" class="text-[clamp(1.5rem,3vw,2.2rem)] text-ink-900">
+        Görüşme nasıl ilerler?
+      </h2>
+
+      <ol class="mt-12 grid gap-px overflow-hidden border border-ink-900/10 bg-ink-900/10 sm:grid-cols-3">
+        {steps.map((step) => (
+          <li class="bg-parchment-50 p-8">
+            <p class="numeral">{step.numeral}</p>
+            <h3 class="mt-5 font-display text-xl text-ink-900">{step.title}</h3>
+            <p class="mt-3 leading-relaxed text-stone-600">{step.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="diger-alanlar">
+    <div class="shell">
+      <h2
+        id="diger-alanlar"
+        class="font-display text-[0.62rem] uppercase tracking-[0.42em] text-gold-700"
+      >
+        Diğer faaliyet alanları
+      </h2>
+
+      <ul class="mt-8 border-t border-ink-900/10">
+        {otherAreas.map((item) => (
+          <li class="border-b border-ink-900/10">
+            <a
+              href={withBase(`/faaliyet-alanlari/${item.slug}/`)}
+              class="group flex items-baseline justify-between gap-6 py-5"
+            >
+              <span class="font-display text-lg text-ink-900 transition-colors group-hover:text-gold-700">
+                {item.title}
+              </span>
+              <span class="font-display text-sm text-gold-600" aria-hidden="true">
+                →
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="plate-dark section" aria-label={practiceAreas.cta.aria}>
+    <div class="shell grid gap-12 lg:grid-cols-[1fr_auto] lg:items-end">
+      <div>
+        <p class="eyebrow-light">{practiceAreas.cta.eyebrow}</p>
+        <h2 class="mt-6 max-w-2xl text-[clamp(1.9rem,4.6vw,3.3rem)] text-parchment-50">
+          {practiceAreas.cta.title}
+        </h2>
+        <p class="mt-7 max-w-xl leading-relaxed text-parchment-200/70">{practiceAreas.cta.text}</p>
+      </div>
+
+      <div class="flex flex-col gap-4 sm:flex-row lg:flex-col">
+        <a href={withBase('/iletisim/')} class="btn btn-gold">
+          {ui.buttons.appointment}
+        </a>
+        <a href={withBase('/hakkimda/')} class="btn btn-ghost-light">
+          {ui.buttons.about}
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

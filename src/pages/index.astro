@@ -1,0 +1,332 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Seal from '../components/Seal.astro';
+import Scales from '../components/Scales.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Ornament from '../components/Ornament.astro';
+import { CONTENT } from '../data/content';
+import { withBase } from '../utils/paths';
+
+const { home, practiceAreas, cv, ui } = CONTENT;
+
+let letterIndex = 0;
+const heroTitleLines = home.hero.nameLines.map((word) => ({
+  word,
+  letters: [...word].map((letter) => ({ letter, i: letterIndex++ })),
+}));
+
+/** Biyografi paragraflarını anahtarla getirir (metinler cv.bio içinde). */
+const bio = (key: keyof typeof cv.bio) => cv.bio[key];
+---
+
+<BaseLayout title={home.seo.title} description={home.seo.description}>
+  <!-- ============================ HERO ============================ -->
+  <section class="plate-dark relative flex min-h-dvh items-center overflow-hidden pt-32 pb-16">
+    <div
+      class="writing-vertical absolute left-5 top-1/2 hidden -translate-y-1/2 font-display text-[0.6rem] uppercase tracking-[0.6em] text-gold-500/45 xl:block"
+      aria-hidden="true"
+    >
+      {home.hero.rail}
+    </div>
+
+    <div class="shell w-full">
+      <div class="grid items-center gap-16 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
+        <div>
+          <p class="eyebrow-light" style="--d: 220ms" data-hero-fade>
+            {home.hero.eyebrow}
+          </p>
+
+          <h1
+            class="mt-7 text-[clamp(2.9rem,9vw,7rem)] leading-[0.92] tracking-[-0.01em] text-parchment-50"
+            data-hero-title
+          >
+            {heroTitleLines.map((line) => (
+              <span class="mask-line">
+                <span>
+                  {line.letters.map(({ letter, i }) => (
+                    <span class="inline-block" style={`--i:${i}`} data-hero-letter>
+                      {letter}
+                    </span>
+                  ))}
+                </span>
+              </span>
+            ))}
+          </h1>
+
+          <div
+            class="mt-10 h-px w-full origin-left bg-gradient-to-r from-gold-500 to-gold-500/0"
+            style="--d: 700ms"
+            data-hero-rule
+            aria-hidden="true"
+          ></div>
+
+          <p
+            class="mt-8 max-w-xl text-lg leading-relaxed text-parchment-200/75"
+            style="--d: 820ms"
+            data-hero-fade
+          >
+            {home.hero.lead}
+          </p>
+
+          <div class="mt-10 flex flex-wrap gap-4" style="--d: 960ms" data-hero-fade>
+            <a href={withBase('/iletisim/')} class="btn btn-gold">
+              {ui.buttons.appointment}
+            </a>
+            <a href={withBase('/faaliyet-alanlari/')} class="btn btn-ghost-light">
+              {ui.buttons.practiceAreas}
+            </a>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-center gap-8" style="--d: 420ms" data-hero-seal>
+          <Seal />
+          <p class="text-center font-display text-[0.6rem] uppercase tracking-[0.5em] text-gold-500/70">
+            {home.hero.caption}
+          </p>
+        </div>
+      </div>
+
+      <dl
+        class="mt-20 grid gap-8 border-t border-gold-500/20 pt-8 sm:grid-cols-3"
+        style="--d: 1120ms"
+        data-hero-fade
+      >
+        {home.hero.meta.map((item) => (
+          <div>
+            <dt class="font-display text-[0.55rem] uppercase tracking-[0.42em] text-gold-500/80">
+              {item.label}
+            </dt>
+            <dd class="mt-3 text-[0.95rem] leading-relaxed text-parchment-200/70">{item.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ========================== TANITIM ========================== -->
+  <section class="section" aria-labelledby={home.intro.id}>
+    <div class="shell grid gap-14 lg:grid-cols-[0.42fr_1fr] lg:gap-24">
+      <div class="lg:sticky lg:top-32 lg:self-start">
+        <div data-reveal>
+          <p class="numeral">{home.intro.numeral}</p>
+          <p class="eyebrow mt-4">{home.intro.eyebrow}</p>
+          <Ornament class="mt-9 max-w-[9rem]" />
+        </div>
+      </div>
+
+      <div>
+        <h2
+          id={home.intro.id}
+          class="font-sans font-normal text-[clamp(1.45rem,2.7vw,2.15rem)] leading-[1.4] text-ink-900"
+          data-reveal
+        >
+          {home.intro.statement}
+        </h2>
+
+        <div class="mt-10 space-y-6 text-[1.05rem] leading-relaxed text-stone-600">
+          {home.intro.paragraphs.map((key) => (
+            <p data-reveal>{bio(key)}</p>
+          ))}
+        </div>
+
+        <a href={withBase('/hakkimda/')} class="btn btn-ghost-dark mt-10" data-reveal>
+          {ui.buttons.about}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== FAALİYET ALANLARI ====================== -->
+  <section class="section bg-parchment-100" aria-labelledby={home.practice.id}>
+    <div class="shell">
+      <SectionHeading
+        id={home.practice.id}
+        numeral={home.practice.numeral}
+        eyebrow={home.practice.eyebrow}
+        title={home.practice.title}
+        lead={home.practice.lead}
+      />
+
+      <ul class="mt-16 border-t border-ink-900/10">
+        {practiceAreas.areas.map((area) => (
+          <li class="border-b border-ink-900/10" data-reveal>
+            <a
+              href={withBase(`/faaliyet-alanlari/${area.slug}/`)}
+              class="group grid grid-cols-[auto_1fr_auto] items-baseline gap-5 py-7 sm:gap-10 sm:py-8"
+            >
+              <span class="numeral">{area.numeral}</span>
+              <span>
+                <span class="block font-display text-xl text-ink-900 transition-colors duration-300 group-hover:text-gold-700 sm:text-2xl">
+                  {area.title}
+                </span>
+                <span class="mt-2.5 block max-w-xl text-[0.98rem] leading-relaxed text-stone-600">
+                  {area.summary}
+                </span>
+              </span>
+              <span
+                class="font-display text-sm text-gold-600 transition-transform duration-300 group-hover:translate-x-1.5"
+                aria-hidden="true"
+              >
+                →
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <p class="mt-10 max-w-2xl text-sm leading-relaxed text-stone-500" data-reveal>
+        {ui.notes.practice}
+      </p>
+    </div>
+  </section>
+
+  <!-- =========================== YAKLAŞIM =========================== -->
+  <section class="plate-dark section" aria-labelledby={home.approach.id}>
+    <div class="shell grid items-center gap-16 lg:grid-cols-[0.78fr_1fr] lg:gap-20">
+      <div class="mx-auto w-full max-w-sm" data-reveal data-parallax="0.14">
+        <Scales />
+      </div>
+
+      <div>
+        <SectionHeading
+          id={home.approach.id}
+          tone="dark"
+          numeral={home.approach.numeral}
+          eyebrow={home.approach.eyebrow}
+          title={home.approach.title}
+        />
+
+        <dl class="mt-12">
+          {home.approach.principles.map((principle) => (
+            <div
+              class="grid gap-4 border-t border-gold-500/15 py-8 sm:grid-cols-[auto_1fr] sm:gap-10"
+              data-reveal
+            >
+              <dt class="numeral text-gold-500">{principle.numeral}</dt>
+              <dd>
+                <p class="font-display text-lg tracking-wide text-parchment-100">
+                  {principle.title}
+                </p>
+                <p class="mt-3 max-w-lg leading-relaxed text-parchment-200/65">{principle.text}</p>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= EĞİTİM & DENEYİM ======================= -->
+  <section class="section" aria-labelledby={home.credentials.id}>
+    <div class="shell">
+      <SectionHeading
+        id={home.credentials.id}
+        numeral={home.credentials.numeral}
+        eyebrow={home.credentials.eyebrow}
+        title={home.credentials.title}
+      />
+
+      <div class="mt-16 grid gap-16 lg:grid-cols-2 lg:gap-24">
+        <div>
+          <h3 class="rule-label">{ui.labels.education}</h3>
+          <ol class="mt-10 space-y-10">
+            {cv.education.map((item) => (
+              <li class="border-l border-gold-500/35 pl-7" data-reveal>
+                <p class="font-display text-[0.6rem] uppercase tracking-[0.38em] text-gold-700">
+                  {item.period}
+                </p>
+                <p class="mt-3 font-display text-lg text-ink-900">{item.degree}</p>
+                <p class="mt-1.5 text-stone-600">{item.school}</p>
+                {item.note && <p class="mt-2 text-sm italic text-stone-500">{item.note}</p>}
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <div>
+          <h3 class="rule-label">{ui.labels.experience}</h3>
+          <ol class="mt-10 space-y-10">
+            {cv.experience.map((item) => (
+              <li class="border-l border-gold-500/35 pl-7" data-reveal>
+                <p class="font-display text-[0.6rem] uppercase tracking-[0.38em] text-gold-700">
+                  {item.period}
+                </p>
+                <p class="mt-3 font-display text-lg text-ink-900">{item.role}</p>
+                <p class="mt-1.5 text-stone-600">{item.org}</p>
+                <ul class="mt-4 space-y-2 text-[0.96rem] leading-relaxed text-stone-600">
+                  {item.items.slice(0, home.credentials.highlightCount).map((entry) => (
+                    <li class="flex gap-3">
+                      <span
+                        class="mt-2 h-1 w-1 shrink-0 rounded-full bg-gold-500"
+                        aria-hidden="true"
+                      />
+                      <span>{entry}</span>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+
+            {cv.internships.map((item) => (
+              <li class="border-l border-ink-900/12 pl-7" data-reveal>
+                <p class="font-display text-[0.6rem] uppercase tracking-[0.38em] text-stone-500">
+                  {ui.labels.internship} · {item.period}
+                </p>
+                <p class="mt-3 font-display text-lg text-ink-900">{item.org}</p>
+              </li>
+            ))}
+          </ol>
+
+          <a
+            href={withBase('/hakkimda/')}
+            class="link-rule mt-10 inline-block font-display text-[0.68rem] uppercase tracking-[0.3em] text-ink-900"
+          >
+            {ui.labels.allResume}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================== ALINTI ========================== -->
+  <section class="bg-parchment-200/60 py-24 sm:py-32">
+    <div class="shell-narrow text-center">
+      <Ornament class="mx-auto max-w-[11rem]" />
+      <blockquote
+        class="mt-10 font-display text-[clamp(1.35rem,3vw,2.25rem)] leading-[1.45] text-ink-900"
+        data-reveal
+      >
+        {home.quote.text}
+      </blockquote>
+      <p class="eyebrow mt-9" data-reveal>
+        {home.quote.attribution}
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================ CTA ============================ -->
+  <section class="plate-dark section">
+    <div class="shell grid gap-12 lg:grid-cols-[1fr_auto] lg:items-end">
+      <div>
+        <p class="eyebrow-light" data-reveal>
+          {home.cta.eyebrow}
+        </p>
+        <h2 class="mt-6 max-w-2xl text-[clamp(2rem,5vw,3.6rem)] text-parchment-50" data-reveal>
+          {home.cta.title}
+        </h2>
+        <p class="mt-7 max-w-xl leading-relaxed text-parchment-200/70" data-reveal>
+          {home.cta.text}
+        </p>
+      </div>
+
+      <div class="flex flex-col gap-4 sm:flex-row lg:flex-col" data-reveal>
+        <a href={withBase('/iletisim/')} class="btn btn-gold">
+          {ui.buttons.appointment}
+        </a>
+        <a href={`tel:${CONTENT.contact.phoneHref}`} class="btn btn-ghost-light">
+          {CONTENT.contact.phone}
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

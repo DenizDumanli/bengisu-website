@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Ornament from '../components/Ornament.astro';
+import { CONTENT } from '../data/content';
+import { withBase } from '../utils/paths';
+
+const { practiceAreas, ui } = CONTENT;
+---
+
+<BaseLayout title={practiceAreas.seo.title} description={practiceAreas.seo.description}>
+  <PageHero
+    numeral={practiceAreas.hero.numeral}
+    eyebrow={practiceAreas.hero.eyebrow}
+    title={practiceAreas.hero.title}
+    lead={practiceAreas.hero.lead}
+  />
+
+  <section class="section" aria-label={practiceAreas.listAria}>
+    <div class="shell">
+      <div class="border-t border-ink-900/12">
+        {practiceAreas.areas.map((area) => (
+          <article id={area.slug} class="border-b border-ink-900/12 py-14 sm:py-16" data-reveal>
+            <div class="grid gap-8 lg:grid-cols-[0.32fr_1fr] lg:gap-20">
+              <div>
+                <p class="numeral text-2xl">{area.numeral}</p>
+                <Ornament class="mt-6 max-w-[8rem] justify-start lg:justify-start" />
+              </div>
+
+              <div>
+                <h2 class="text-[clamp(1.6rem,3.2vw,2.5rem)] text-ink-900">{area.title}</h2>
+                <p class="mt-6 max-w-2xl text-lg leading-relaxed text-stone-600">{area.summary}</p>
+
+                <a
+                  href={withBase(`/faaliyet-alanlari/${area.slug}/`)}
+                  class="link-rule mt-8 inline-block font-display text-[0.68rem] uppercase tracking-[0.3em] text-ink-900"
+                >
+                  {ui.labels.details}
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <p class="mt-12 max-w-2xl text-sm leading-relaxed text-stone-500" data-reveal>
+        {ui.notes.practice}
+      </p>
+    </div>
+  </section>
+
+  <section class="plate-dark section" aria-label={practiceAreas.cta.aria}>
+    <div class="shell grid gap-12 lg:grid-cols-[1fr_auto] lg:items-end">
+      <div>
+        <p class="eyebrow-light" data-reveal>
+          {practiceAreas.cta.eyebrow}
+        </p>
+        <h2 class="mt-6 max-w-2xl text-[clamp(1.9rem,4.6vw,3.3rem)] text-parchment-50" data-reveal>
+          {practiceAreas.cta.title}
+        </h2>
+        <p class="mt-7 max-w-xl leading-relaxed text-parchment-200/70" data-reveal>
+          {practiceAreas.cta.text}
+        </p>
+      </div>
+
+      <div class="flex flex-col gap-4 sm:flex-row lg:flex-col" data-reveal>
+        <a href={withBase('/iletisim/')} class="btn btn-gold">
+          {ui.buttons.appointment}
+        </a>
+        <a href={withBase('/hakkimda/')} class="btn btn-ghost-light">
+          {ui.buttons.about}
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

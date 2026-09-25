@@ -1,0 +1,31 @@
+# build output
+dist/
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# local browser-automation artifacts
+.playwright-mcp/
+
+
+# environment variables
+.env
+.env.production
+
+# local source assets and personal documents (not part of the published site)
+/logo.png
+CV*.pdf
+
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/

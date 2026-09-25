@@ -1,0 +1,161 @@
+---
+import { CONTENT } from '../data/content';
+
+const { contact, contactPage } = CONTENT;
+const form = contactPage.form;
+---
+
+<form
+  class="contact-form"
+  action={`mailto:${contact.email}`}
+  method="post"
+  enctype="text/plain"
+  data-contact-form
+  data-email={contact.email}
+  data-mail-subject-prefix={form.mailSubjectPrefix}
+  data-mail-field-name={form.mailFields.name}
+  data-mail-field-phone={form.mailFields.phone}
+  data-mail-field-email={form.mailFields.email}
+>
+  <div class="grid gap-6 sm:grid-cols-2">
+    <div class="field">
+      <label for="cf-name">{form.labels.name}</label>
+      <input id="cf-name" name="name" type="text" autocomplete="name" required />
+    </div>
+
+    <div class="field">
+      <label for="cf-phone">{form.labels.phone}</label>
+      <input id="cf-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" />
+    </div>
+
+    <div class="field sm:col-span-2">
+      <label for="cf-email">{form.labels.email}</label>
+      <input id="cf-email" name="email" type="email" autocomplete="email" required />
+    </div>
+
+    <div class="field sm:col-span-2">
+      <label for="cf-subject">{form.labels.subject}</label>
+      <input id="cf-subject" name="subject" type="text" required />
+    </div>
+
+    <div class="field sm:col-span-2">
+      <label for="cf-message">{form.labels.message}</label>
+      <textarea id="cf-message" name="message" rows="6" required></textarea>
+    </div>
+  </div>
+
+  <label class="mt-6 flex items-start gap-3 text-[0.82rem] leading-relaxed text-parchment-200/70">
+    <input
+      id="cf-consent"
+      name="consent"
+      type="checkbox"
+      required
+      class="mt-1 h-4 w-4 shrink-0 accent-gold-500"
+    />
+    <span>{form.consent}</span>
+  </label>
+
+  <div class="mt-8 flex flex-wrap items-center gap-5">
+    <button type="submit" class="btn btn-gold">
+      {form.submit}
+    </button>
+    <p
+      class="text-[0.8rem] text-parchment-200/60"
+      data-contact-status
+      data-status-message={form.status}
+      role="status"
+      aria-live="polite"
+    >
+      {form.hint}
+    </p>
+  </div>
+</form>
+
+<style>
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .field label {
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--color-gold-400);
+  }
+
+  .field input,
+  .field textarea {
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid color-mix(in oklab, var(--color-gold-500) 28%, transparent);
+    background: transparent;
+    padding: 0.6rem 0.1rem;
+    font-family: var(--font-sans);
+    font-size: 1.05rem;
+    color: var(--color-parchment-50);
+    transition:
+      border-color 0.3s ease,
+      background-color 0.3s ease;
+  }
+
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: color-mix(in oklab, var(--color-parchment-100) 30%, transparent);
+  }
+
+  .field input:hover,
+  .field textarea:hover {
+    border-color: color-mix(in oklab, var(--color-gold-500) 50%, transparent);
+  }
+
+  .field input:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: var(--color-gold-500);
+    background: color-mix(in oklab, var(--color-gold-500) 5%, transparent);
+  }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 8rem;
+  }
+
+  .field input:user-invalid,
+  .field textarea:user-invalid {
+    border-color: var(--color-danger-500);
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  const status = document.querySelector<HTMLElement>('[data-contact-status]');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const data = new FormData(form);
+    const value = (key: string) => String(data.get(key) ?? '').trim();
+    const dataset = form.dataset;
+
+    const prefix = dataset.mailSubjectPrefix ?? '';
+    const subject = prefix ? `${prefix} — ${value('subject')}` : value('subject');
+    const body = [
+      `${dataset.mailFieldName ?? 'name'}: ${value('name')}`,
+      `${dataset.mailFieldPhone ?? 'phone'}: ${value('phone') || '—'}`,
+      `${dataset.mailFieldEmail ?? 'email'}: ${value('email')}`,
+      '',
+      value('message'),
+    ].join('\n');
+
+    const mailto = `mailto:${dataset.email ?? ''}?subject=${encodeURIComponent(
+      subject,
+    )}&body=${encodeURIComponent(body)}`;
+
+    if (status && status.dataset.statusMessage) status.textContent = status.dataset.statusMessage;
+    window.location.href = mailto;
+  });
+</script>

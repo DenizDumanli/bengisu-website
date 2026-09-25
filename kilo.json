@@ -1,0 +1,68 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+  "permission": {
+    "aura_*": "ask",
+    "fs_*": "ask",
+    "playwright_*": "ask",
+    "memory_*": "allow",
+    "github_*": "ask",
+    "figma_*": "ask",
+    "fetch_*": "ask",
+    "fs_read_file": "allow",
+    "fs_read_multiple_files": "allow",
+    "fs_list_directory": "allow",
+    "fs_list_allowed_directories": "allow",
+    "fs_directory_tree": "allow",
+    "fs_search_files": "allow",
+    "fs_get_file_info": "allow",
+    "fs_create_directory": "allow",
+    "playwright_browser_navigate": "allow",
+    "playwright_browser_snapshot": "allow",
+    "playwright_browser_take_screenshot": "allow",
+    "playwright_browser_console_messages": "allow",
+    "playwright_browser_close": "allow",
+    "playwright_browser_evaluate": "ask",
+    "playwright_browser_run_code": "ask"
+  },
+  "mcp": {
+    "fs": {
+      "type": "local",
+      "command": ["npx.cmd", "-y", "@modelcontextprotocol/server-filesystem@latest", "."],
+      "enabled": true,
+      "timeout": 20000
+    },
+    "playwright": {
+      "type": "local",
+      "command": ["npx.cmd", "-y", "@playwright/mcp@latest"],
+      "enabled": true,
+      "timeout": 30000
+    },
+    "memory": {
+      "type": "local",
+      "command": ["npx.cmd", "-y", "@modelcontextprotocol/server-memory@latest"],
+      "enabled": true,
+      "timeout": 20000
+    },
+    "aura": {
+      "type": "remote",
+      "url": "https://mcp.aura.build/mcp",
+      "enabled": true
+    },
+    "github": {
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "enabled": true
+    },
+    "figma": {
+      "type": "remote",
+      "url": "http://127.0.0.1:3845/mcp",
+      "enabled": false
+    },
+    "fetch": {
+      "type": "local",
+      "command": ["uvx", "mcp-server-fetch"],
+      "enabled": false,
+      "timeout": 20000
+    }
+  }
+}

@@ -1,0 +1,85 @@
+---
+import { CONTENT } from '../data/content';
+import { withBase } from '../utils/paths';
+import LogoMark from './LogoMark.astro';
+import Ornament from './Ornament.astro';
+
+const { nav, ui, identity, contact } = CONTENT;
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer plate-dark border-t border-gold-500/15">
+  <div class="shell grid gap-14 py-16 sm:py-20 lg:grid-cols-[1.5fr_1fr_1fr] lg:gap-10">
+    <div>
+      <div class="flex items-center gap-4">
+        <LogoMark size="md" />
+        <div class="leading-none">
+          <p class="font-display text-lg tracking-[0.22em] text-parchment-50">
+            {identity.wordmark}
+          </p>
+          <p class="mt-2 font-display text-[0.55rem] tracking-[0.5em] text-gold-500">
+            {identity.officeLabel}
+          </p>
+        </div>
+      </div>
+
+      <p class="mt-7 max-w-sm text-[0.98rem] leading-relaxed text-parchment-200/65">
+        {identity.tagline}
+      </p>
+
+      <Ornament class="mt-8 max-w-[12rem]" />
+    </div>
+
+    <nav aria-label={ui.aria.footerNav}>
+      <h2 class="font-display text-[0.62rem] uppercase tracking-[0.42em] text-gold-500">
+        {ui.labels.menuHeading}
+      </h2>
+      <ul class="mt-6 space-y-3.5 text-[0.98rem]">
+        {nav.map((item) => (
+          <li>
+            <a
+              href={withBase(item.href)}
+              class="link-rule text-parchment-200/75 transition-colors hover:text-gold-300"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div>
+      <h2 class="font-display text-[0.62rem] uppercase tracking-[0.42em] text-gold-500">
+        {ui.labels.contactHeading}
+      </h2>
+      <ul class="mt-6 space-y-3.5 text-[0.98rem] text-parchment-200/75">
+        <li>
+          <a class="link-rule" href={`tel:${contact.phoneHref}`}>
+            {contact.phone}
+          </a>
+        </li>
+        <li>
+          <a class="link-rule break-all" href={`mailto:${contact.email}`}>
+            {contact.email}
+          </a>
+        </li>
+        <li>
+          <a class="link-rule" href={contact.linkedin} target="_blank" rel="noopener noreferrer">
+            {ui.labels.linkedinLink}
+          </a>
+        </li>
+        <li class="text-parchment-200/65">{contact.location}</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-gold-500/12">
+    <div class="shell flex flex-col gap-4 py-7 text-[0.72rem] leading-relaxed text-parchment-200/65 sm:flex-row sm:items-center sm:justify-between">
+      <p>
+        © {year} {identity.fullName}. {ui.notes.license}
+      </p>
+      <p class="max-w-xl sm:text-right">{ui.notes.footerDisclaimer}</p>
+    </div>
+  </div>
+</footer>

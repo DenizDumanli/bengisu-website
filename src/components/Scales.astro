@@ -1,0 +1,57 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<svg
+  class:list={['scales', className]}
+  viewBox="0 0 320 300"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.25"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+  data-scales
+>
+  <g data-scales-draw>
+    <circle cx="160" cy="34" r="6" pathLength="1" data-draw />
+    <path d="M160 40 V 246" pathLength="1" data-draw />
+    <path d="M112 262 H 208" pathLength="1" data-draw />
+    <path d="M128 246 H 192" pathLength="1" data-draw />
+    <path d="M124 246 L 160 262 L 196 246" pathLength="1" data-draw />
+    <g data-scales-beam>
+      <path d="M52 84 H 268" pathLength="1" data-draw />
+      <path d="M52 84 L 160 76 L 268 84" pathLength="1" data-draw />
+      <g data-scales-pan="left">
+        <path d="M52 84 V 150" pathLength="1" data-draw />
+        <path d="M16 150 A 36 30 0 0 0 88 150" pathLength="1" data-draw />
+      </g>
+      <g data-scales-pan="right">
+        <path d="M268 84 V 150" pathLength="1" data-draw />
+        <path d="M232 150 A 36 30 0 0 0 304 150" pathLength="1" data-draw />
+      </g>
+    </g>
+  </g>
+  <path
+    d="M160 70 l9 9 l-9 9 l-9 -9 z"
+    pathLength="1"
+    data-draw
+    fill="currentColor"
+    stroke="none"
+    opacity="0.85"
+  />
+</svg>
+
+<style>
+  .scales {
+    display: block;
+    width: 100%;
+    height: auto;
+    color: var(--color-gold-500);
+  }
+</style>

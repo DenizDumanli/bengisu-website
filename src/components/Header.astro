@@ -1,0 +1,176 @@
+---
+import { CONTENT } from '../data/content';
+import { withBase } from '../utils/paths';
+import LogoMark from './LogoMark.astro';
+
+const { nav, ui, identity, contact } = CONTENT;
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => {
+  const target = withBase(href);
+  return href === '/' ? path === target : path.startsWith(target);
+};
+---
+
+<header
+  class="site-header fixed inset-x-0 top-0 z-50 border-b border-transparent transition-colors duration-500"
+  data-header
+>
+  <div class="shell flex items-center justify-between gap-6 py-3.5">
+    <a href={withBase('/')} class="group flex items-center gap-3.5" aria-label={identity.homeLabel}>
+      <LogoMark size="sm" loading="eager" />
+      <span class="flex flex-col leading-none">
+        <span class="font-display text-[0.92rem] tracking-[0.24em] text-parchment-100">
+          {identity.wordmark}
+        </span>
+        <span class="mt-1.5 font-display text-[0.5rem] tracking-[0.52em] text-gold-500">
+          {identity.roleLabel}
+        </span>
+      </span>
+    </a>
+
+    <nav class="hidden lg:block" aria-label={ui.aria.mainNav}>
+      <ul class="flex items-center gap-9">
+        {nav.map((item) => (
+          <li>
+            <a
+              href={withBase(item.href)}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+              class:list={[
+                'font-display text-[0.68rem] uppercase tracking-[0.3em] transition-colors duration-300',
+                isActive(item.href) ? 'text-gold-400' : 'text-parchment-200/75 hover:text-gold-300',
+              ]}
+            >
+              <span class="link-rule">{item.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a href={withBase('/iletisim/')} class="btn btn-ghost-light hidden px-6 py-3 xl:inline-flex">
+        {ui.buttons.appointment}
+      </a>
+
+      <button
+        type="button"
+        class="relative -mr-2 flex h-11 w-11 items-center justify-center lg:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-toggle
+        data-label-open={ui.menuClose}
+        data-label-close={ui.menuOpen}
+      >
+        <span class="sr-only">{ui.menuOpen}</span>
+        <span class="relative block h-4 w-6" aria-hidden="true">
+          <span
+            class="absolute left-0 top-0 h-px w-full bg-gold-400 transition-transform duration-300"
+            data-menu-bar="top"
+          ></span>
+          <span
+            class="absolute bottom-0 left-0 h-px w-full bg-gold-400 transition-transform duration-300"
+            data-menu-bar="bottom"
+          ></span>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="invisible absolute inset-x-0 top-full lg:hidden" data-menu-panel>
+    <div class="plate-dark border-t border-gold-500/15">
+      <nav class="shell py-8" aria-label={ui.aria.mobileNav}>
+        <ul class="flex flex-col divide-y divide-gold-500/10">
+          {nav.map((item, i) => (
+            <li>
+              <a
+                href={withBase(item.href)}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+                class:list={[
+                  'flex items-baseline justify-between py-4 font-display text-lg tracking-[0.18em] transition-colors',
+                  isActive(item.href) ? 'text-gold-400' : 'text-parchment-100 hover:text-gold-300',
+                ]}
+              >
+                <span>{item.label}</span>
+                <span class="numeral text-xs text-gold-600" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div class="mt-8 space-y-2 text-sm text-parchment-200/70">
+          <p>
+            <a class="link-rule" href={`tel:${contact.phoneHref}`}>
+              {contact.phone}
+            </a>
+          </p>
+          <p>
+            <a class="link-rule" href={`mailto:${contact.email}`}>
+              {contact.email}
+            </a>
+          </p>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header.is-scrolled {
+    background-color: color-mix(in oklab, var(--color-ink-950) 88%, transparent);
+    border-bottom-color: color-mix(in oklab, var(--color-gold-500) 18%, transparent);
+    backdrop-filter: blur(14px) saturate(1.1);
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const panel = document.querySelector<HTMLElement>('[data-menu-panel]');
+  const topBar = document.querySelector<HTMLElement>('[data-menu-bar="top"]');
+  const bottomBar = document.querySelector<HTMLElement>('[data-menu-bar="bottom"]');
+
+  if (toggle && panel) {
+    let open = false;
+
+    // Labels come from src/data/content.ts via data attributes.
+    const labelOpen = toggle.dataset.labelOpen;
+    const labelClose = toggle.dataset.labelClose;
+    const srLabel = toggle.querySelector('.sr-only');
+
+    const setState = (next: boolean) => {
+      open = next;
+      toggle.setAttribute('aria-expanded', String(open));
+      const label = open ? labelOpen : labelClose;
+      if (srLabel && label) srLabel.textContent = label;
+      panel.classList.toggle('invisible', !open);
+      panel.classList.toggle('visible', open);
+      topBar?.classList.toggle('translate-y-[7px]', open);
+      topBar?.classList.toggle('rotate-45', open);
+      bottomBar?.classList.toggle('-translate-y-[8px]', open);
+      bottomBar?.classList.toggle('-rotate-45', open);
+      document.documentElement.classList.toggle('overflow-hidden', open);
+    };
+
+    toggle.addEventListener('click', () => setState(!open));
+
+    panel.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('a')) setState(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && open) {
+        setState(false);
+        toggle.focus();
+      }
+    });
+
+    // Leaving the mobile breakpoint hides both the panel and its toggle, so the
+    // state (including the scroll lock) must be released with it.
+    const desktop = window.matchMedia('(min-width: 1024px)');
+    desktop.addEventListener('change', (event) => {
+      if (event.matches && open) setState(false);
+    });
+  }
+</script>

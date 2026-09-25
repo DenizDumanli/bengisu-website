@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="B A">
+  <!-- Standalone SVG: external CSS vars do not apply. Colours mirror
+       --color-ink-950 and --color-gold-500 from src/styles/global.css. -->
+  <rect width="64" height="64" fill="#0a0907" />
+  <rect x="3.5" y="3.5" width="57" height="57" fill="none" stroke="#c9a961" stroke-opacity="0.45" />
+  <text
+    x="32"
+    y="44"
+    text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="32"
+    font-weight="600"
+    letter-spacing="0.5"
+    fill="#c9a961"
+  >BA</text>
+</svg>

@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Ornament from '../components/Ornament.astro';
+import { CONTENT } from '../data/content';
+import { withBase } from '../utils/paths';
+
+const { notFound, ui } = CONTENT;
+---
+
+<BaseLayout title={notFound.seo.title} noindex>
+  <section class="plate-dark flex min-h-dvh items-center justify-center py-32 text-center">
+    <div class="shell">
+      <p class="font-display text-[clamp(4rem,16vw,10rem)] leading-none text-gold-500/85">
+        {notFound.code}
+      </p>
+
+      <Ornament class="mx-auto mt-8 max-w-[11rem]" />
+
+      <h1 class="mt-10 text-[clamp(1.6rem,4vw,2.6rem)] text-parchment-50">{notFound.title}</h1>
+      <p class="mx-auto mt-6 max-w-md leading-relaxed text-parchment-200/70">{notFound.text}</p>
+
+      <div class="mt-10 flex flex-wrap justify-center gap-4">
+        <a href={withBase('/')} class="btn btn-gold">
+          {ui.buttons.home}
+        </a>
+        <a href={withBase('/iletisim/')} class="btn btn-ghost-light">
+          {ui.buttons.contact}
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

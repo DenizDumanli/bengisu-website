@@ -1,0 +1,13 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={['ornament', 'text-[0.6rem]', className]} role="presentation">
+  <span aria-hidden="true" class="leading-none">
+    ◆
+  </span>
+</div>

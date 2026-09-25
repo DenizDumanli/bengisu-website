@@ -1,0 +1,6 @@
+dist
+node_modules
+.astro
+.kilo/worktrees
+package-lock.json
+public

@@ -1,0 +1,36 @@
+---
+import { withBase } from '../utils/paths';
+
+interface Props {
+  size?: 'sm' | 'md' | 'lg';
+  loading?: 'eager' | 'lazy';
+  class?: string;
+}
+
+const { size = 'md', loading = 'lazy', class: className } = Astro.props;
+
+const dims = {
+  sm: 'h-11 w-11',
+  md: 'h-14 w-14',
+  lg: 'h-20 w-20',
+} as const;
+---
+
+<span
+  class:list={[
+    'relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-ink-950 ring-1 ring-gold-500/50',
+    dims[size],
+    className,
+  ]}
+>
+  <img
+    src={withBase('/logo-mark.webp')}
+    alt=""
+    aria-hidden="true"
+    width="192"
+    height="192"
+    class="h-full w-full scale-[1.16] object-cover"
+    loading={loading}
+    decoding="async"
+  />
+</span>

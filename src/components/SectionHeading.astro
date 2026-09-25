@@ -1,0 +1,49 @@
+---
+interface Props {
+  numeral?: string;
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  tone?: 'light' | 'dark';
+  id?: string;
+  class?: string;
+}
+
+const { numeral, eyebrow, title, lead, tone = 'light', id, class: className } = Astro.props;
+---
+
+<div class:list={['flex flex-col items-start', className]} data-reveal>
+  {(numeral || eyebrow) && (
+    <p class="eyebrow flex items-center gap-4">
+      {numeral && <span aria-hidden="true">{numeral}</span>}
+      {numeral && eyebrow && (
+        <span
+          class:list={['h-px w-8', tone === 'dark' ? 'bg-gold-500/50' : 'bg-gold-600/50']}
+          aria-hidden="true"
+        />
+      )}
+      {eyebrow && <span>{eyebrow}</span>}
+    </p>
+  )}
+
+  <h2
+    id={id}
+    class:list={[
+      'mt-6 max-w-2xl text-[clamp(1.9rem,4.2vw,3.35rem)]',
+      tone === 'dark' ? 'text-parchment-50' : 'text-ink-900',
+    ]}
+  >
+    {title}
+  </h2>
+
+  {lead && (
+    <p
+      class:list={[
+        'mt-6 max-w-xl text-lg leading-relaxed sm:text-xl',
+        tone === 'dark' ? 'text-parchment-200/75' : 'text-stone-600',
+      ]}
+    >
+      {lead}
+    </p>
+  )}
+</div>

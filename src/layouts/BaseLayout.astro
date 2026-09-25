@@ -1,0 +1,147 @@
+---
+import '@fontsource-variable/cinzel';
+import '@fontsource-variable/eb-garamond';
+import '@fontsource-variable/eb-garamond/wght-italic.css';
+import '../styles/global.css';
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { CONTENT } from '../data/content';
+import { absoluteUrl, baseOrigin, withBase } from '../utils/paths';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  imageWidth?: number;
+  imageHeight?: number;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title = CONTENT.seo.siteTitle,
+  description = CONTENT.seo.siteDescription,
+  image = '/og-image.png',
+  type = CONTENT.seo.ogType,
+  noindex = false,
+  imageWidth = 1200,
+  imageHeight = 630,
+  schema,
+} = Astro.props;
+
+const fullTitle =
+  title === CONTENT.seo.siteTitle ? title : `${title} | ${CONTENT.identity.fullName}`;
+const origin = Astro.site ?? Astro.url;
+const root = baseOrigin(origin);
+const canonical = new URL(Astro.url.pathname, origin).href;
+const ogImage = absoluteUrl(image, origin);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${root}/#website`,
+      url: `${root}/`,
+      name: CONTENT.seo.schemaName,
+      inLanguage: CONTENT.locale,
+      publisher: { '@id': `${root}/#business` },
+    },
+    {
+      '@type': 'Attorney',
+      '@id': `${root}/#business`,
+      name: CONTENT.seo.schemaName,
+      alternateName: CONTENT.identity.fullName,
+      description: CONTENT.seo.siteDescription,
+      url: `${root}/`,
+      image: ogImage,
+      telephone: CONTENT.contact.phone,
+      email: CONTENT.contact.email,
+      areaServed: { '@type': 'City', name: CONTENT.contact.city },
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: CONTENT.contact.city,
+        addressCountry: CONTENT.contact.countryCode,
+      },
+      knowsLanguage: CONTENT.seo.schemaLanguages,
+      founder: { '@id': `${root}/#person` },
+    },
+    {
+      '@type': 'Person',
+      '@id': `${root}/#person`,
+      name: CONTENT.identity.fullName,
+      jobTitle: CONTENT.identity.role,
+      worksFor: { '@id': `${root}/#business` },
+      sameAs: [CONTENT.contact.linkedin],
+      knowsLanguage: CONTENT.seo.schemaLanguages,
+    },
+  ],
+};
+---
+
+<!doctype html>
+<html lang={CONTENT.locale} class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <!-- Mirrors --color-ink-950 in src/styles/global.css (meta content cannot use CSS vars). -->
+    <meta name="theme-color" content="#0a0907" />
+
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <link rel="icon" href={withBase('/favicon.ico')} sizes="32x32" />
+    <link rel="apple-touch-icon" href={withBase('/logo-mark.png')} />
+    <link rel="canonical" href={canonical} />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content={CONTENT.seo.robotsNoindex} />}
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={CONTENT.seo.schemaName} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content={String(imageWidth)} />
+    <meta property="og:image:height" content={String(imageHeight)} />
+    <meta property="og:image:alt" content={CONTENT.seo.ogImageAlt} />
+    <meta property="og:locale" content={CONTENT.seo.ogLocale} />
+
+    <meta name="twitter:card" content={CONTENT.seo.twitterCard} />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={CONTENT.seo.ogImageAlt} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
+    <script is:inline>
+      document.documentElement.classList.remove('no-js');
+      document.documentElement.classList.add('js');
+      // Failsafe: if the motion bundle never boots, un-hide every revealed element.
+      window.setTimeout(function () {
+        if (document.documentElement.dataset.motion !== 'ready') {
+          document.documentElement.classList.remove('js');
+        }
+      }, 3000);
+    </script>
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <a class="skip-link" href="#main">
+      {CONTENT.ui.skipToContent}
+    </a>
+    <div class="film-grain" aria-hidden="true"></div>
+    <Header />
+    <main id="main" class="flex-1" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      import '../scripts/motion';
+    </script>
+  </body>
+</html>
